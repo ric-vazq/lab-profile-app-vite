@@ -1,8 +1,8 @@
 import background from '../../../images/oval-bg.png';
 import { useRef, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { AuthContext } from '../context/auth.context';
+import authService from '../service/auth.service';
 
 export default function LoginPage() {
   const usernameRef = useRef();
@@ -14,23 +14,25 @@ export default function LoginPage() {
   const { storeToken, authenticateUser } = useContext(AuthContext);
 
   const onSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      const body = {
-        username: usernameRef.current.value,
-        password: passwordRef.current.value,
-      };
-      //console.log(body);
+    e.preventDefault();
+    const body = {
+      username: usernameRef.current.value,
+      password: passwordRef.current.value,
+    };
+    //console.log(body);
 
-      let response = await axios.post('http://localhost:5005/auth/login', body);
-      // console.log(response)
-      storeToken(response.data.authToken);
-      authenticateUser();
-      navigate(`/user`);
-    } catch (err) {
-      const errorDescription = err.response.data.message;
-      setErrorMessage(errorDescription);
-    }
+    authService
+      .logIn(body)
+      .then((response) => {
+        console.log('JWT token', response.data.authToken);
+        storeToken(response.data.authToken);
+        authenticateUser();
+        navigate('/');
+      })
+      .catch((error) => {
+        const errorDescription = error.response.data.message;
+        setErrorMessage(errorDescription);
+      });
   };
   return (
     <div

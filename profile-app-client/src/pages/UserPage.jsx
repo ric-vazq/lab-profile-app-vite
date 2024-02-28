@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/auth.context';
 import background from '../../../images/oval-bg.png';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import authService from '../service/auth.service';
 
 export default function UserPage() {
   const [image, setImage] = useState('');
@@ -13,45 +13,43 @@ export default function UserPage() {
   useEffect(() => {
     setUser(null);
     setIsLoading(true);
-    const fetchData = async () => {
-      const storedToken = localStorage.getItem('authToken');
-      const response = await axios.get('http://localhost:5005/api/users', {
-        headers: { Authorization: `Bearer ${storedToken}` },
+    authService
+      .verifyToken()
+      .then((response) => {
+        setUser(response.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      console.log('frontend response: ', response.data);
-      setUser(response.data);
-      setIsLoading(false);
-      console.log('after set:', user);
-    };
-    fetchData();
   }, []);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(image);
     const requestBody = { image: image };
-    console.log(requestBody);
-    // Get the token from the localStorage
-    const storedToken = localStorage.getItem('authToken');
-
-    const response = await axios.put('http://localhost:5005/api/users', requestBody, {
-        headers: { Authorization: `Bearer ${storedToken}` },
+    authService
+      .editUser(requestBody)
+      .then((response) => {
+        setUser(response.data);
       })
-      console.log(response.data);
-      navigate('/user')
-      }
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleFileUpload = async (e) => {
     const uploadData = new FormData();
 
     uploadData.append('image', e.target.files[0]);
 
-    console.log('uploadData: ', uploadData);
-
-
-    const response = await axios.post('http://localhost:5005/api/upload', uploadData);
-    console.log('response: ', response.data);
-    setImage(response.data.fileUrl)
+    authService
+      .uploadPhoto(uploadData)
+      .then((response) => {
+        setImage(response.data.fileUrl);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const logOut = () => {
@@ -123,7 +121,7 @@ export default function UserPage() {
                 type="file"
                 placeholder={user.img}
               />
-              <button type='submit'> Change Photo</button>
+              <button type="submit"> Change Photo</button>
             </form>
           </div>
         </div>

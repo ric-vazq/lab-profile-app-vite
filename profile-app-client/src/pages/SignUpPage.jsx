@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import background from '../../../images/oval-bg.png';
+import authService from '../service/auth.service';
 
 export default function SignUpPage() {
   const usernameRef = useRef();
@@ -20,10 +21,14 @@ export default function SignUpPage() {
       campus: campusRef.current.value,
     };
     // console.log(body)
-
-    let post = await axios.post('http://localhost:5005/auth/signup', body);
-    console.log(post);
-    return navigate('/auth/login');
+    authService.signUp(body)
+    .then(response => {
+      navigate('/auth/login')
+    })
+    .catch(error => {
+      const errorDescription = error.response.data.message; 
+      console.log(errorDescription);
+    })
   };
   return (
     <div

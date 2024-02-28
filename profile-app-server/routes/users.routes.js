@@ -16,24 +16,27 @@ router.get('/users', isAuthenticated, async (req, res, next) => {
 });
 
 router.post('/upload', fileUploader.single('image'), async (req, res, next) => {
- try {
+  try {
     console.log('file is: ', req.file);
     if (!req.file) {
       next(new Error('No file uploaded!'));
       return;
     }
-    const fileUrl = await req.file.path; 
+    const fileUrl = await req.file.path;
     return res.json({ fileUrl: fileUrl });
- } catch (error) {
-    next(error)
- }
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.put('/users', isAuthenticated, async (req, res, next) => {
-    console.log('payload: ', req.payload);
-    console.log('body: ', req.body);
-    updatedUser = await User.findByIdAndUpdate(req.payload._id, req.body, { new: true })
-    res.status(200).json(updatedUser)
-})
+  console.log('payload: ', req.payload);
+  console.log('body: ', req.body);
+  updatedUser = await User.findByIdAndUpdate(req.payload._id, req.body, {
+    new: true,
+  });
+  const { _id, username, campus, course, image } = updatedUser;
+  res.status(200).json({ _id, username, campus, course, image });
+});
 
 module.exports = router;

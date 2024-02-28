@@ -93,7 +93,7 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/verify', isAuthenticated, async (req, res, next) => {
   try {
-    console.log('req.payload', req.payload);
+    // console.log('req.payload', req.payload);
     res.status(200).json(req.payload);
   } catch (err) {
     next(err);

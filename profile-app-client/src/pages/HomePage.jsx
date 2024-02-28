@@ -27,10 +27,22 @@ export default function HomePage() {
           <p className="text-3xl my-5 text-gray-500">
             A place for Ironhackers to sign up and view each others profiles!{' '}
           </p>
-          <div className='flex flex-col h-1/2 items-center'>
-              <Link to={'/auth/login'} style={{backgroundColor: '#C1DFC4'}} className='font-medium rounded-lg text-sm px-9 py-3 mb-5'>Log In</Link>
+          <div className="flex flex-col h-1/2 items-center">
+            <Link
+              to={'/auth/login'}
+              style={{ backgroundColor: '#C1DFC4' }}
+              className="font-medium rounded-lg text-sm px-9 py-3 mb-5"
+            >
+              Log In
+            </Link>
 
-              <Link to={'/auth/signup'} style={{backgroundColor: '#C1DFC4'}} className='font-medium rounded-lg text-sm px-9 py-3'>Sign Up</Link>
+            <Link
+              to={'/auth/signup'}
+              style={{ backgroundColor: '#C1DFC4' }}
+              className="font-medium rounded-lg text-sm px-9 py-3"
+            >
+              Sign Up
+            </Link>
           </div>
         </div>
       </div>
